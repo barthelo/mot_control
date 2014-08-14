@@ -1,0 +1,4 @@
+[Project]
+Name=mot_control
+Manager=KDevGenericManager
+VersionControl=kdevgit

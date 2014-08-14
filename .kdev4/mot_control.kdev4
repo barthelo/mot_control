@@ -1,0 +1,73 @@
+[Buildset]
+BuildItems=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x01\x00\x00\x00\x0b\x00\x00\x00\x00\x01\x00\x00\x00\x16\x00m\x00o\x00t\x00_\x00c\x00o\x00n\x00t\x00r\x00o\x00l)
+
+[CustomBuildSystem]
+CurrentConfiguration=BuildConfig0
+
+[CustomBuildSystem][BuildConfig0]
+BuildDir=file:///home/eugen/Dokumente/Studium/Master/2Semester/CaroloCup/Motor/mot_control
+Title=myConfig
+
+[CustomBuildSystem][BuildConfig0][ProjectPath0]
+Defines=\x00\x00\x00\x00
+Includes=\x00\x00\x00\x00
+Path=.
+
+[CustomBuildSystem][BuildConfig0][ToolBuild]
+Arguments=all
+Enabled=true
+Environment=default
+Executable=make
+Type=0
+
+[CustomBuildSystem][BuildConfig0][ToolClean]
+Arguments=clean
+Enabled=true
+Environment=default
+Executable=make
+Type=3
+
+[CustomBuildSystem][BuildConfig0][ToolConfigure]
+Arguments=
+Enabled=false
+Environment=
+Executable=
+Type=1
+
+[CustomBuildSystem][BuildConfig0][ToolInstall]
+Arguments=burn
+Enabled=true
+Environment=
+Executable=make
+Type=2
+
+[CustomBuildSystem][BuildConfig0][ToolPrune]
+Arguments=
+Enabled=false
+Environment=
+Executable=
+Type=4
+
+[Launch]
+Launch Configurations=Launch Configuration 0
+
+[Launch][Launch Configuration 0]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=Neuer Anwendung-Starter
+Type=Native Application
+
+[Launch][Launch Configuration 0][Data]
+Arguments=
+Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
+Dependency Action=Nothing
+EnvironmentGroup=default
+Executable=file:///home/eugen/Dokumente/Studium/Master/2Semester/CaroloCup/Motor/mot_control/
+External Terminal=make burn
+Project Target=
+Use External Terminal=true
+Working Directory=
+isExecutable=true
+
+[Project]
+VersionControlSupport=kdevgit

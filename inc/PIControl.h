@@ -13,6 +13,7 @@
 #include "stm32f4xx_conf.h"
 #include "stm32f4xx.h"
 /* Private define ------------------------------------------------------------*/
+#define KI 1
 /* Private variables ---------------------------------------------------------*/
 /* Exported functions --------------------------------------------------------*/
 #endif /* __PIControl_H */

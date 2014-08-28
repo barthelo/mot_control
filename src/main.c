@@ -6,11 +6,31 @@
 #include "SpeedEncoder.h"
 #include "FQChopper.h"
 #include "Usart.h"
+#include "PIControl.h"
+
 
 void BTN_vInit(void);
+PIC CurrentController;
+
+float go; 
+
+void TIM3_IRQHandler(void)
+{
+  float current=ADC_fGetCurrent(ADC_fGetVoltage(ADC_u16GetADCValue('l')));
+  float command;
+  if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)
+  {    
+    GPIO_ToggleBits(GPIOD, GPIO_Pin_13);
+    command=PIC_fCalcCommand(&CurrentController,go,current);
+    command=command*12;
+    command<0?FQC_vSetDutyCycleBackward(command*-1.0):FQC_vSetDutyCycleForward(command);
+    TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
+  }
+}
 
 int main(void)
 {
+  TIMM_vInit();
   SystemInit();
   ENC_vInit();
   USART_vInit();
@@ -21,10 +41,12 @@ int main(void)
   /* Start ADC cenversion (Position is variable in source code)*/
   ADC_SoftwareStartConv(ADC1);
   
-  
+  //
+  PIC_vConstructor(&CurrentController,5.50295848990433,0.096169815417594,20.0,-20.0,1,1/100.0);
   uint16_t adc_value;
   float voltage_value;
   float current_value;
+  
   
   float rpm=0;
   float acceleration=0;
@@ -34,13 +56,13 @@ int main(void)
   {
     if(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0))
     {
-      FQC_vSetDutyCycleForward(80);
+      go=1.06;
       GPIO_SetBits(GPIOD, GPIO_Pin_15);
       signal=9.3;
     }
     else
     {
-      FQC_vSetDutyCycleForward(15);
+      go=0.36;
       GPIO_ResetBits(GPIOD, GPIO_Pin_15);
       signal=1.17;
     }
@@ -49,10 +71,10 @@ int main(void)
     current_value=ADC_fGetCurrent(voltage_value);
     rpm=ENC_fGetRPM();
     acceleration=ENC_fGetAcceleration();
-    USART_vSendFloatAsString(signal);
-    USART_vSendFloatAsString(rpm);
-    USART_vSendFloatAsString(acceleration);
-    USART_vSendFloatAsString(current_value);
+//     USART_vSendFloatAsString(signal);
+//     USART_vSendFloatAsString(rpm);
+//     USART_vSendFloatAsString(acceleration);
+//     USART_vSendFloatAsString(current_value);
   }
 }
 
@@ -80,4 +102,3 @@ void BTN_vInit(void)
   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
   GPIO_Init(GPIOD, &GPIO_InitStructure);
 }
-

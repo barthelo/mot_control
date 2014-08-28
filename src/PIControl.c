@@ -15,6 +15,36 @@
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
+void TIMM_vInit(void)
+{ 
+  //Setting up timer Interrupt
+  TIM_TimeBaseInitTypeDef TIM_TimeBaseInit_Structure;
+  NVIC_InitTypeDef NVIC_InitStructure;
+  //Enable TIM3 Clock
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
+  //Configure timer
+  TIM_TimeBaseInit_Structure.TIM_Prescaler=(uint16_t)((SystemCoreClock/2)/3000000)-1;//Prescaler = ((SystemCoreClock /2) / TIMx counter clock) - 1
+  TIM_TimeBaseInit_Structure.TIM_Period=(3000000/100)-1;// ARR = (TIMx counter clock / TIMx output clock) - 1
+  TIM_TimeBaseInit_Structure.TIM_ClockDivision=TIM_CKD_DIV1;
+  TIM_TimeBaseInit_Structure.TIM_CounterMode=TIM_CounterMode_Up;
+  TIM_TimeBaseInit(TIM3, &TIM_TimeBaseInit_Structure);
+  
+  //Configure Interrupt
+  NVIC_InitStructure.NVIC_IRQChannel=TIM3_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelCmd=ENABLE;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=0x01;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority=0x01;
+  NVIC_Init(&NVIC_InitStructure);
+  
+  //Attach timer to interrupt
+  TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);
+  
+  //Enable timer
+  TIM_Cmd(TIM3, ENABLE);
+}
+
+
+
 /**
  * @brief  Setting up the structure's constants
  * @param  *Conrtoller Pointer to structure
@@ -26,7 +56,7 @@
  * @param  PIC_fTs Sampling time for integration
  * @retval none
  **/
-void PIC_vConnstructor(PIC* Controller,float PIC_fKI, float PIC_fKP, float PIC_fUpperLimit, float PIC_fLowerLimit, float PIC_fKb, float PIC_fTs)
+void PIC_vConstructor(PIC* Controller,float PIC_fKI, float PIC_fKP, float PIC_fUpperLimit, float PIC_fLowerLimit, float PIC_fKb, float PIC_fTs)
 {
   Controller->PIC_fKI=PIC_fKI;
   Controller->PIC_fKP=PIC_fKP;
@@ -63,7 +93,7 @@ float PIC_fCalcCommand(PIC* Controller, float PIC_fInputValue, float PIC_fFeedba
   {
     Controller->PIC_fCommandValue=Controller->PIC_fUpperLimit;
   }
-  else if(Controller->PIC_fValKPKI<Controller->PIC_fUpperLimit)
+  else if(Controller->PIC_fValKPKI<Controller->PIC_fLowerLimit)
   {
     Controller->PIC_fCommandValue=Controller->PIC_fLowerLimit;
   }

@@ -43,4 +43,6 @@ float PIC_fCalcCommand(PIC* Controller,float PIC_fInputValue,float PIC_fFeedback
 void PIC_vCalcIntegrationValue(PIC* Controller);
 float PIC_fAntiWindUpBackCalc(PIC* Controller);
 
+void TIMM_vInit(void);
+
 #endif /* __PIControl_H */

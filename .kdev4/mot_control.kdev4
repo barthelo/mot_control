@@ -8,11 +8,6 @@ CurrentConfiguration=BuildConfig0
 BuildDir=file:///home/eugen/Dokumente/Studium/Master/2Semester/CaroloCup/Motor/mot_control
 Title=myConfig
 
-[CustomBuildSystem][BuildConfig0][ProjectPath0]
-Defines=\x00\x00\x00\x00
-Includes=\x00\x00\x00\x00
-Path=.
-
 [CustomBuildSystem][BuildConfig0][ToolBuild]
 Arguments=all
 Enabled=true
@@ -47,6 +42,16 @@ Enabled=false
 Environment=
 Executable=
 Type=4
+
+[CustomDefinesAndIncludes][ProjectPath0]
+Defines=\x00\x00\x00\x00
+Includes=\x00\x00\x00\x00
+Path=
+
+[Defines And Includes][Compiler]
+Name=GCC
+Path=gcc
+Type=GCC
 
 [Launch]
 Launch Configurations=Launch Configuration 0

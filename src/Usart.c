@@ -78,7 +78,7 @@ void USART_vSendFloatAsString(float value)
   char valuestring[20];
   sprintf(valuestring,"%f",value);
   USART_vSendString(valuestring);
-  USART_vSendString("\r\n");
+  USART_vSendString("\r\n");/*\r\n*/
 }
 
 void USART3_IRQHandler(void)

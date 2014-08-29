@@ -136,7 +136,11 @@ float ADC_fGetVoltage(uint16_t ADC_u16ADCValue)
 float ADC_fGetCurrent(float ADC_fVoltage)
 {
   float ADC_fCurrent;
-  ADC_fCurrent=ADC_fVoltage*ADC_LOAD_CURRENT_FACTOR;
+  float sign;
+  
+  ENC_ui8GetDir()?(sign=(-1)):(sign=1);
+  
+  ADC_fCurrent=sign*ADC_fVoltage*ADC_LOAD_CURRENT_FACTOR;
   return ADC_fCurrent;
 }
 

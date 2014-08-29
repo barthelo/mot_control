@@ -17,6 +17,7 @@
 #include "stm32f4xx.h"
 #include "stm32f4xx_conf.h" 
 #include "stm32f4xx_adc.h"
+#include "SpeedEncoder.h"
 /* Exported types ------------------------------------------------------------*/
 volatile uint16_t ADC_u16ConvertedValue[2];
 /* Exported constants --------------------------------------------------------*/

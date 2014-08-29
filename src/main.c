@@ -22,7 +22,7 @@ void TIM3_IRQHandler(void)
   {    
     GPIO_ToggleBits(GPIOD, GPIO_Pin_13);
     command=PIC_fCalcCommand(&CurrentController,go,current);
-    command=command*12;
+    command=command*100;
     command<0?FQC_vSetDutyCycleBackward(command*-1.0):FQC_vSetDutyCycleForward(command);
     TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
   }
@@ -41,40 +41,39 @@ int main(void)
   /* Start ADC cenversion (Position is variable in source code)*/
   ADC_SoftwareStartConv(ADC1);
   
-  //
-  PIC_vConstructor(&CurrentController,5.50295848990433,0.096169815417594,20.0,-20.0,1,1/100.0);
+  
+  PIC_vConstructor(&CurrentController,0.90295848990433,0.06169815417594,1,-1,1,1/100.0);
   uint16_t adc_value;
   float voltage_value;
   float current_value;
   
   
   float rpm=0;
-  float acceleration=0;
-  float signal=1.1769;
+  float signal=0;
   
   while(1)
   {
     if(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0))
     {
-      go=1.06;
+//       FQC_vSetDutyCycleBackward(20);
+      go=0.5;
       GPIO_SetBits(GPIOD, GPIO_Pin_15);
-      signal=9.3;
+      signal=1;
     }
     else
     {
-      go=0.36;
+//       FQC_vSetDutyCycleForward(20);
+      go=-0.5;
       GPIO_ResetBits(GPIOD, GPIO_Pin_15);
-      signal=1.17;
+      signal=0;
     }
     adc_value=ADC_u16GetADCValue('l');
     voltage_value=ADC_fGetVoltage(adc_value);
     current_value=ADC_fGetCurrent(voltage_value);
     rpm=ENC_fGetRPM();
-    acceleration=ENC_fGetAcceleration();
 //     USART_vSendFloatAsString(signal);
 //     USART_vSendFloatAsString(rpm);
-//     USART_vSendFloatAsString(acceleration);
-//     USART_vSendFloatAsString(current_value);
+    USART_vSendFloatAsString(current_value);
   }
 }
 

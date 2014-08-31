@@ -11,19 +11,27 @@
 
 void BTN_vInit(void);
 PIC CurrentController;
+PIC SpeedController;
 
-float go; 
+float RPM; 
 
 void TIM3_IRQHandler(void)
 {
+  float speed=ENC_fGetRPM();
   float current=ADC_fGetCurrent(ADC_fGetVoltage(ADC_u16GetADCValue('l')));
-  float command;
+  float dutycycle;
+  float current_set;
   if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)
   {    
     GPIO_ToggleBits(GPIOD, GPIO_Pin_13);
-    command=PIC_fCalcCommand(&CurrentController,go,current);
-    command=command*100;
-    command<0?FQC_vSetDutyCycleBackward(command*-1.0):FQC_vSetDutyCycleForward(command);
+    current_set=PIC_fCalcCommand(&SpeedController,RPM,speed);
+    dutycycle=PIC_fCalcCommand(&CurrentController,current_set,current);
+    dutycycle=dutycycle*100;
+    if(dutycycle<0)
+        FQC_vSetDutyCycleBackward(dutycycle*-1.0);
+    else
+        FQC_vSetDutyCycleForward(dutycycle);
+
     TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
   }
 }
@@ -56,14 +64,14 @@ int main(void)
     if(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0))
     {
 //       FQC_vSetDutyCycleBackward(20);
-      go=0.5;
+      RPM=10000;
       GPIO_SetBits(GPIOD, GPIO_Pin_15);
       signal=1;
     }
     else
     {
-//       FQC_vSetDutyCycleForward(20);
-      go=-0.5;
+      /*FQC_vSetDutyCycleForward(20);*/
+      RPM=20000;
       GPIO_ResetBits(GPIOD, GPIO_Pin_15);
       signal=0;
     }
@@ -71,8 +79,8 @@ int main(void)
     voltage_value=ADC_fGetVoltage(adc_value);
     current_value=ADC_fGetCurrent(voltage_value);
     rpm=ENC_fGetRPM();
-//     USART_vSendFloatAsString(signal);
-//     USART_vSendFloatAsString(rpm);
+    /*USART_vSendFloatAsString(signal);*/
+    /*USART_vSendFloatAsString(rpm);*/
     USART_vSendFloatAsString(current_value);
   }
 }

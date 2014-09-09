@@ -1,0 +1,6 @@
+-std=c99
+-I inc/
+-I lib/inc/
+-I lib/
+-I lib/inc/core/
+-I lib/inc/peripherals/

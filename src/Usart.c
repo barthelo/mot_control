@@ -7,7 +7,7 @@
   * @brief   This file provides set of firmware functions USART
   ******************************************************************************/
 #include "Usart.h"
-volatile char StringLoop[] = "The quick brown fox jumps over the lazy dog\r\n";
+char StringLoop[]="Das ist ein Test";
 /**
  * @brief  Initialisiert den USART und den dazugehoerigen Ports
  * @param  none
@@ -22,7 +22,7 @@ void USART_vInit(void)
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
   
-  // Initialisierung der GPIOs
+  /*Initalization der GPIOs*/
   GPIO_PinAFConfig(GPIOD, GPIO_PinSource8, GPIO_AF_USART3);
   GPIO_PinAFConfig(GPIOD, GPIO_PinSource9, GPIO_AF_USART3);
   
@@ -35,7 +35,7 @@ void USART_vInit(void)
 
  USART_ITConfig(USART3,USART_IT_RXNE,ENABLE);
   
-  // USART Configuration
+  /*USART Configuration*/
   USART_InitStructure.USART_BaudRate=115200;
   USART_InitStructure.USART_WordLength=USART_WordLength_8b;
   USART_InitStructure.USART_StopBits= USART_StopBits_1;
@@ -44,14 +44,14 @@ void USART_vInit(void)
   USART_InitStructure.USART_Mode= USART_Mode_Tx | USART_Mode_Rx;
   USART_Init(USART3, &USART_InitStructure);
   
-  // NVIC Configuration
+  /*NVIC Configuration*/
   NVIC_InitStructure.NVIC_IRQChannel=USART3_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelCmd=ENABLE;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=0;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority=0;
   NVIC_Init(&NVIC_InitStructure);
   
-  //Activate USART
+  /*Activate USART*/
   USART_Cmd(USART3, ENABLE);
   
 }

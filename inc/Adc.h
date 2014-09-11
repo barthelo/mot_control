@@ -4,9 +4,7 @@
  * @author   Eugen Bartel
  * @version  V1.0
  * @date     17. April 2013
- * @brief    Diese Datei enthält die Deklarationen der Funktionen, der Variablen
- *              und die Präprozessoranweisungen, die bnoetigt werden, um den
- *              ADC betreiben.
+ * @brief    This file provides set of firmware functions to manage the AD
  ******************************************************************************/
 
 /* Define to prevent recursive inclusion -------------------------------------*/

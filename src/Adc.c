@@ -96,10 +96,11 @@ void ADC_vInit(void)
     
 }
 /**
-* @brief Gibt den Spannungswert aus der ADC Umwandlung fuer die gewaehlte Achse
-* @param ADC_c16Axis Charakter der gwuenschten Achse x,y oder z
-* @retval ADC_u16ADCValue 12Bit Wert, den der ADC Umgewandelt hat
+* @brief After choosing a FQC side its ADC value is returned
+* @param ADC_cChopperSide 'l' or 'r' for appropriate side
+* @retval ADC_u16ADCValue 12Bit ADC value
 **/
+
 uint16_t ADC_u16GetADCValue(char ADC_cChopperSide)
 {
     uint16_t ADC_u16ADCValue;
@@ -117,9 +118,9 @@ uint16_t ADC_u16GetADCValue(char ADC_cChopperSide)
 }
 
 /**
-* @brief Gibt Spannungswert zurueck
-* @param ADC_u16ADCValue ADC Wert
-* @retval ADC_u16Voltage Umgerecgnete Spannung
+* @brief Calculate voltage out of given ADC value
+* @param ADC_u16ADCValue ADC value
+* @retval ADC_u16Voltage Calculated volatage
 **/
 
 float ADC_fGetVoltage(uint16_t ADC_u16ADCValue)
@@ -132,9 +133,9 @@ float ADC_fGetVoltage(uint16_t ADC_u16ADCValue)
 }
 
 /**
-* @brief Gibt Stromwert zurueck
-* @param ADC_fVoltage Spannungswert
-* @retval ADC_fCurrent Stromwert
+* @brief Calculate current value out of given voltage value
+* @param ADC_fVoltage Voltage value
+* @retval ADC_fCurrent Current value
 **/
 
 float ADC_fGetCurrent(float ADC_fVoltage)

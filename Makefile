@@ -1,7 +1,7 @@
 # put your *.o targets here, make should handle the rest!
 
 SRCS = main.c system_stm32f4xx.c stm32f4xx_it.c \
-Pwm.c Adc.c SpeedEncoder.c FQChopper.c Usart.c PIControl.c
+Adc.c SpeedEncoder.c FQChopper.c Usart.c PIControl.c
 
 # all the files will be generated with this name (main.elf, main.bin, main.hex, etc)
 

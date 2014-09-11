@@ -1,7 +1,6 @@
 #include "stm32f4xx.h"
 #include "stm32f4xx_conf.h"
 
-#include "Pwm.h"
 #include "Adc.h"
 #include "SpeedEncoder.h"
 #include "FQChopper.h"

@@ -13,6 +13,8 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+float ADC_fCurrent1=0;
+float ADC_fCurrent2=0;
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
@@ -123,6 +125,8 @@ uint16_t ADC_u16GetADCValue(char ADC_cChopperSide)
 float ADC_fGetVoltage(uint16_t ADC_u16ADCValue)
 {
   float ADC_fVoltage;
+
+  /*Calculate voltage out of ADC value*/
   ADC_fVoltage=ADC_u16ADCValue*(ADC_VOLTAGE_REFERENCE/ADC_MAX_RESOLUTION);
   return ADC_fVoltage;
 }
@@ -135,12 +139,21 @@ float ADC_fGetVoltage(uint16_t ADC_u16ADCValue)
 
 float ADC_fGetCurrent(float ADC_fVoltage)
 {
-  float ADC_fCurrent;
+  float ADC_fCurrent=0;
+  /*float ADC_fCurrentFilter=0;*/
   float sign;
-  
+
+  /*Get encoder's direction*/
   ENC_ui8GetDir()?(sign=(-1)):(sign=1);
   
+  /*Calculate voltage to currentt*/
   ADC_fCurrent=sign*ADC_fVoltage*ADC_LOAD_CURRENT_FACTOR;
+  
+  /*Filtering current*/
+/*  ADC_fCurrentFilter=ADC_FILTER_COEFF_1*ADC_fCurrent1+ADC_FILTER_COEFF_2*ADC_fCurrent2;*/
+  /*ADC_fCurrent1=ADC_fCurrent;*/
+  /*ADC_fCurrent2=ADC_fCurrentFilter;*/
+
   return ADC_fCurrent;
 }
 

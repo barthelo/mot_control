@@ -16,7 +16,7 @@
 GPIO_InitTypeDef GPIO_InitStructure;
 TIM_TimeBaseInitTypeDef TIM_TimeBaseInit_Structure;
 TIM_OCInitTypeDef TIM_OCInitTypeDef_Structure;
-float FQC_fDutyCycle=66.6;
+float FQC_fDutyCycle=0.0;
 uint16_t FQC_u16ARR=0;
 uint16_t FQC_u16CCR=0;
 /* Private function prototypes -----------------------------------------------*/
@@ -82,7 +82,12 @@ void FQC_vInit(void)
 
 void FQC_vSetDutyCycleForward(float FQC_fDutyCycle)
 {
-  /*  */
+    /*Catch and correct faulty duty cycle values*/
+    if(FQC_fDutyCycle>100)
+        FQC_fDutyCycle=100;
+    if(FQC_fDutyCycle<0)
+        FQC_fDutyCycle=0;
+    
   FQC_u16CCR=(uint16_t)((FQC_fDutyCycle/100.0f)*(FQC_u16ARR+1));
   TIM_SetCompare2(TIM2, (uint32_t)0);
   TIM_SetCompare3(TIM2, (uint32_t)FQC_u16CCR);
@@ -95,7 +100,12 @@ void FQC_vSetDutyCycleForward(float FQC_fDutyCycle)
 
 void FQC_vSetDutyCycleBackward(float FQC_fDutyCycle)
 {
-  /*  */
+    /*Catch and correct faulty duty cycle values*/
+    if(FQC_fDutyCycle>100)
+        FQC_fDutyCycle=100;
+    if(FQC_fDutyCycle<0)
+        FQC_fDutyCycle=0;
+    
   FQC_u16CCR=(uint16_t)((FQC_fDutyCycle/100.0f)*(FQC_u16ARR+1));
   TIM_SetCompare2(TIM2, (uint32_t)FQC_u16CCR);
   TIM_SetCompare3(TIM2, (uint32_t)0);

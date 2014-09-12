@@ -19,8 +19,8 @@
 /* Exported types ------------------------------------------------------------*/
 volatile uint16_t ADC_u16ConvertedValue[2];
 /* Exported constants --------------------------------------------------------*/
-#define ADC_FILTER_COEFF_1 0.2835
-#define ADC_FILTER_COEFF_2 0.7165
+#define ADC_FILTER_COEFF_1 0.0198
+#define ADC_FILTER_COEFF_2 0.9802
 #define ADC1_DR_ADDRESS 0x4001204C //ADC Regular Data Register of ADC1 (RM0090 p. 51, 247, 242)
 #define ADC_VOLTAGE_REFERENCE 2.95
 #define ADC_MAX_RESOLUTION 4095.0

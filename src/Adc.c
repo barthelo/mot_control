@@ -141,7 +141,7 @@ float ADC_fGetVoltage(uint16_t ADC_u16ADCValue)
 float ADC_fGetCurrent(float ADC_fVoltage)
 {
   float ADC_fCurrent=0;
-  /*float ADC_fCurrentFilter=0;*/
+  float ADC_fCurrentFilter=0;
   float sign;
 
   /*Get encoder's direction*/
@@ -151,9 +151,9 @@ float ADC_fGetCurrent(float ADC_fVoltage)
   ADC_fCurrent=sign*ADC_fVoltage*ADC_LOAD_CURRENT_FACTOR;
   
   /*Filtering current*/
-/*  ADC_fCurrentFilter=ADC_FILTER_COEFF_1*ADC_fCurrent1+ADC_FILTER_COEFF_2*ADC_fCurrent2;*/
-  /*ADC_fCurrent1=ADC_fCurrent;*/
-  /*ADC_fCurrent2=ADC_fCurrentFilter;*/
+  ADC_fCurrentFilter=ADC_FILTER_COEFF_1*ADC_fCurrent1+ADC_FILTER_COEFF_2*ADC_fCurrent2;
+  ADC_fCurrent1=ADC_fCurrent;
+  ADC_fCurrent2=ADC_fCurrentFilter;
 
   return ADC_fCurrent;
 }

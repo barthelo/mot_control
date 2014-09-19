@@ -123,3 +123,20 @@ void FQC_vBreak(void)
   TIM_SetCompare3(TIM2, (uint32_t)0);
 }
 
+/**
+ * @brief  Set dutycycle. Also accept negaitve dutycycle
+ * @param FQC_fDutyCycle Positive or negative dutycycle 
+ * @retval none
+ **/
+
+void FQC_vSetDutyCycle(float FQC_fDutyCycle)
+{
+    if(FQC_fDutyCycle>0)
+    {
+       FQC_vSetDutyCycleForward(FQC_fDutyCycle);
+    }
+    else if(FQC_fDutyCycle<0)
+    {
+        FQC_vSetDutyCycleBackward(FQC_fDutyCycle);
+    }
+}

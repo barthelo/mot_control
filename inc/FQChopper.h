@@ -23,6 +23,7 @@
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions --------------------------------------------------------*/
 void FQC_vInit(void);
+void FQC_vSetDutyCycle(float FQC_fDutyCycle);
 void FQC_vSetDutyCycleForward(float FQC_fDutyCycle);
 void FQC_vSetDutyCycleBackward(float FQC_fDutyCycle);
 void FQC_vBreak(void);

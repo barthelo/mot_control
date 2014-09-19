@@ -155,6 +155,6 @@ float ADC_fGetCurrent(float ADC_fVoltage)
   ADC_fCurrent1=ADC_fCurrent;
   ADC_fCurrent2=ADC_fCurrentFilter;
 
-  return ADC_fCurrent;
+  return ADC_fCurrentFilter*0.58+0.163;
 }
 

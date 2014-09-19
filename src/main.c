@@ -7,18 +7,16 @@
 #include "Usart.h"
 #include "PIControl.h"
 
-
-#define GEAR_RATIO_TO_SHAFT 2.77 /*big_gear=61, small_gear=22*/
 void BTN_vInit(void);
 PIC CurrentController;
 PIC SpeedController;
 
-float RPM=0;
-float current_set=0;
+float RPM;
+float current_set;
 float dutycycle;
 void TIM3_IRQHandler(void)
 {
-  float speed=ENC_fGetRPM()/GEAR_RATIO_TO_SHAFT;
+  float speed=ENC_fGetRPM();
   float current=ADC_fGetCurrent(ADC_fGetVoltage(ADC_u16GetADCValue('l')));
   if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)
   {   
@@ -53,16 +51,17 @@ int main(void)
   /* Start ADC cenversion (Position is variable in source code)*/
   ADC_SoftwareStartConv(ADC1);
 
-  /*Speed controller*/
-  PIC_vConstructor(&SpeedController,0.0,0.007,10,-10,1,1/100);
-
   /*Current controller*/
   PIC_vConstructor(&CurrentController,1.59545708416707,0.353526079900942,1,-1,1,1/100.0);
-  /*slow*//*PIC_vConstructor(&CurrentController,0.90295848990433,0.06169815417594,1,-1,1,1/100.0);*/
-  /*agressive*//*PIC_vConstructor(&CurrentController,6.24238455222794,1.72290111327225,1,-1,1,1/100.0);*/
+  /*slow*/
+  /*PIC_vConstructor(&CurrentController,0.90295848990433,0.06169815417594,1,-1,1,1/100.0);*/
+  /*agressive*/
+  //PIC_vConstructor(&CurrentController,6.24238455222794,1.72290111327225,1,-1,1,1/100.0);
 
   /*Speed controller*/
-  PIC_vConstructor(&SpeedController,0,0.0911764179885756,20,-20,1,1/100.0);
+  //PIC_vConstructor(&SpeedController,0,0.0911764179885756,20,-20,1,1/100.0);
+  /*PIC_vConstructor(&SpeedController,0.00859,0.00117,10,-10,1,1/100.0);*/
+  PIC_vConstructor(&SpeedController,0.003101,0.0008224,20,-20,1,1/100.0);
 
   uint16_t adc_value;
   float voltage_value;
@@ -75,17 +74,17 @@ int main(void)
   {/*User button pushed*/
     if(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0))
     {
-      /*RPM=2000.0;*/
-      /*current_set=0.88;*/
-      FQC_vSetDutyCycleForward(90);
+      RPM=1500.0;
+      //current_set=0.88;
+      /*FQC_vSetDutyCycleForward(60);*/
       GPIO_SetBits(GPIOD, GPIO_Pin_15);
       signal=4.52;
     }
     else
     {/*User button released*/
-      /*RPM=500.0;*/
-      /*current_set=0.36;*/
-      FQC_vSetDutyCycleForward(35);
+      RPM=500.0;
+      //current_set=0.46;
+      /*FQC_vSetDutyCycleForward(20);*/
       GPIO_ResetBits(GPIOD, GPIO_Pin_15);
       signal=2.01;
     }
@@ -95,7 +94,7 @@ int main(void)
     rpm=ENC_fGetRPM();
     /*USART_vSendFloatAsString(signal);*/
     /*USART_vSendFloatAsString(rpm);*/
-    USART_vSendFloatAsString(voltage_value);
+    USART_vSendFloatAsString(rpm);
   }
 }
 

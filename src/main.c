@@ -23,12 +23,11 @@ void TIM3_IRQHandler(void)
     GPIO_ToggleBits(GPIOD, GPIO_Pin_13);
 
     /*Calculating current to set*/
-    current_set=PIC_fCalcCommand(&SpeedController,RPM,speed);
+    /*current_set=PIC_fCalcCommand(&SpeedController,RPM,speed);*/
     /*Calculating duty cycle to set*/
     dutycycle=PIC_fCalcCommand(&CurrentController,current_set,current);
 
     /*Convert values to valid duty cylce*/
-    dutycycle=dutycycle*100;
     if(dutycycle<0)
     FQC_vSetDutyCycleBackward(dutycycle*-1.0);
     else
@@ -52,7 +51,9 @@ int main(void)
   ADC_SoftwareStartConv(ADC1);
 
   /*Current controller*/
-  PIC_vConstructor(&CurrentController,1.59545708416707,0.353526079900942,1,-1,1,1/100.0);
+  /*PIC_vConstructor(&CurrentController,1.59545708416707,0.353526079900942,1,-1,1,1/100.0);*/
+  /*DC 0 to 100*/
+  PIC_vConstructor(&CurrentController,198.795121348507,6.18792004994483,100,-100,198.795121348507,1/100.0);
   /*slow*/
   /*PIC_vConstructor(&CurrentController,0.90295848990433,0.06169815417594,1,-1,1,1/100.0);*/
   /*agressive*/
@@ -61,7 +62,7 @@ int main(void)
   /*Speed controller*/
   //PIC_vConstructor(&SpeedController,0,0.0911764179885756,20,-20,1,1/100.0);
   /*PIC_vConstructor(&SpeedController,0.00859,0.00117,10,-10,1,1/100.0);*/
-  PIC_vConstructor(&SpeedController,0.003101,0.0008224,20,-20,1,1/100.0);
+  /*TOP PPIC_vConstructor(&SpeedController,0.003101,0.0008224,20,-20,1,1/100.0);*/
 
   uint16_t adc_value;
   float voltage_value;
@@ -74,16 +75,16 @@ int main(void)
   {/*User button pushed*/
     if(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0))
     {
-      RPM=1500.0;
-      //current_set=0.88;
+      /*RPM=-1500.0;*/
+      current_set=-0.88;
       /*FQC_vSetDutyCycleForward(60);*/
       GPIO_SetBits(GPIOD, GPIO_Pin_15);
       signal=4.52;
     }
     else
     {/*User button released*/
-      RPM=500.0;
-      //current_set=0.46;
+      /*RPM=500.0;*/
+      current_set=0.46;
       /*FQC_vSetDutyCycleForward(20);*/
       GPIO_ResetBits(GPIOD, GPIO_Pin_15);
       signal=2.01;

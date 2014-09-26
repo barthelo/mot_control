@@ -137,6 +137,6 @@ void FQC_vSetDutyCycle(float FQC_fDutyCycle)
     }
     else if(FQC_fDutyCycle<0)
     {
-        FQC_vSetDutyCycleBackward(FQC_fDutyCycle);
+        FQC_vSetDutyCycleBackward((-1)*FQC_fDutyCycle);
     }
 }

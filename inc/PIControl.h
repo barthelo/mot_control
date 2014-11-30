@@ -39,7 +39,8 @@ struct PIC{
 };
 /* Exported functions --------------------------------------------------------*/
 void PIC_vConstructor(PIC* Controller,float PIC_fKI, float PIC_fKP, float PIC_fUpperLimit, float PIC_fLowerLimit, float PIC_fKb, float PIC_fTs);
-float PIC_fCalcCommand(PIC* Controller,float PIC_fInputValue,float PIC_fFeedbackValue);
+float PIC_fCalcCommandParallelForm(PIC* Controller,float PIC_fInputValue,float PIC_fFeedbackValue);
+float PIC_fCalcCommandIdealForm(PIC* Controller,float PIC_fInputValue,float PIC_fFeedbackValue);
 void PIC_vCalcIntegrationValue(PIC* Controller);
 float PIC_fAntiWindUpBackCalc(PIC* Controller);
 

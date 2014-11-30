@@ -74,11 +74,14 @@ void PIC_vConstructor(PIC* Controller,float PIC_fKI, float PIC_fKP, float PIC_fU
 }
 
 /**
- * @brief  Setting up the structure's constants
+ * @brief  Calculates command value in parallel form
+ *          (Kp+KI*(1/s))
  * @param  *Conrtoller Pointer to structure
- * @retval none
+ * @param  PIC_fInputValue Input variable
+ * @param  PIC_fFeedbaclValue Feedback variable
+ * @retval PIC_fCommandValue Calculated command value
  **/
-float PIC_fCalcCommand(PIC* Controller, float PIC_fInputValue, float PIC_fFeedbackValue)
+float PIC_fCalcCommandParallelFom(PIC* Controller, float PIC_fInputValue, float PIC_fFeedbackValue)
 {
   /*Calculatin diff*/
   Controller->PIC_fDiff=PIC_fInputValue-PIC_fFeedbackValue;
@@ -106,9 +109,43 @@ float PIC_fCalcCommand(PIC* Controller, float PIC_fInputValue, float PIC_fFeedba
 }
 
 /**
+ * @brief  Calculating command value in ideal form
+ *          Kp(1+KI*(1/s))
+ * @param  *Conrtoller Pointer to structure
+ * @param  PIC_fInputValue Input variable
+ * @param  PIC_fFeedbaclValue Feedback variable
+ * @retval PIC_fCommandValue Calculated command value
+ **/
+float PIC_fCalcCommandIdealForm(PIC* Controller, float PIC_fInputValue, float PIC_fFeedbackValue)
+{
+  /*Calculatin diff*/
+  Controller->PIC_fDiff=PIC_fInputValue-PIC_fFeedbackValue;
+  /*Integral's input*/
+  Controller->PIC_fIntgVal0=Controller->PIC_fDiff*Controller->PIC_fKI+PIC_fAntiWindUpBackCalc(Controller);
+  /*Integration*/
+  PIC_vCalcIntegrationValue(Controller);
+  /*Pre Command Value*/
+  Controller->PIC_fValKPKI=Controller->PIC_fKP*(Controller->PIC_fDiff+Controller->PIC_fArea1);
+  /*Calculate command value*/
+  if(Controller->PIC_fValKPKI>Controller->PIC_fUpperLimit)
+  {
+    Controller->PIC_fCommandValue=Controller->PIC_fUpperLimit;
+  }
+  else if(Controller->PIC_fValKPKI<Controller->PIC_fLowerLimit)
+  {
+    Controller->PIC_fCommandValue=Controller->PIC_fLowerLimit;
+  }
+  else
+  {
+    Controller->PIC_fCommandValue=Controller->PIC_fValKPKI;
+  }
+  
+  return Controller->PIC_fCommandValue;
+}
+
+/**
  * @brief  Integration procedure
  * @param  *Conrtoller Pointer to structure
- * @param  none
  * @retval none
  **/
 void PIC_vCalcIntegrationValue(PIC* Controller)

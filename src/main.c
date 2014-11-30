@@ -14,24 +14,33 @@ PIC SpeedController;
 float RPM;
 float current_set;
 float dutycycle;
+uint16_t adc_value;
+float voltage_value;
+float current_value;
+
+float rpm=0;
+float signal=0;
+
 void TIM3_IRQHandler(void)
 {
-  float speed=ENC_fGetRPM();
-  float current=ADC_fGetCurrent(ADC_fGetVoltage(ADC_u16GetADCValue('l')));
   if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)
   {   
     GPIO_ToggleBits(GPIOD, GPIO_Pin_13);
+    /*Get voltage value*/
+    /*voltage_value=(ADC_fGetVoltage(ADC_u16GetADCValue('l'))-ADC_OFFSET_L)-(ADC_fGetVoltage(ADC_u16GetADCValue('r'))-ADC_OFFSET_R);*/
+    /*current_value=(ADC_fGetCurrent());*/
+    /*float speed=ENC_fGetRPM();*/
+    float current=ADC_fGetCurrent();
 
     /*Calculating current to set*/
     /*current_set=PIC_fCalcCommand(&SpeedController,RPM,speed);*/
     /*Calculating duty cycle to set*/
-    dutycycle=PIC_fCalcCommand(&CurrentController,current_set,current);
+    dutycycle=PIC_fCalcCommandIdealForm(&CurrentController,current_set,current);
 
     /*Convert values to valid duty cylce*/
-    if(dutycycle<0)
-    FQC_vSetDutyCycleBackward(dutycycle*-1.0);
-    else
-    FQC_vSetDutyCycleForward(dutycycle);
+    FQC_vSetDutyCycle(dutycycle);
+    
+    USART_vSendFloatAsString(current);
 
     TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
   }
@@ -39,13 +48,13 @@ void TIM3_IRQHandler(void)
 
 int main(void)
 {
-  TIMM_vInit();
   SystemInit();
   ENC_vInit();
   USART_vInit();
   FQC_vInit();
   BTN_vInit();
   ADC_vInit();
+  TIMM_vInit();
 
   /* Start ADC cenversion (Position is variable in source code)*/
   ADC_SoftwareStartConv(ADC1);
@@ -53,49 +62,49 @@ int main(void)
   /*Current controller*/
   /*PIC_vConstructor(&CurrentController,1.59545708416707,0.353526079900942,1,-1,1,1/100.0);*/
   /*DC 0 to 100*/
-  PIC_vConstructor(&CurrentController,198.795121348507,6.18792004994483,100,-100,198.795121348507,1/100.0);
+  /*PIC_vConstructor(&CurrentController,198.795121348507,6.18792004994483,100,-100,198.795121348507,1/100.0);*/
   /*slow*/
   /*PIC_vConstructor(&CurrentController,0.90295848990433,0.06169815417594,1,-1,1,1/100.0);*/
   /*agressive*/
   //PIC_vConstructor(&CurrentController,6.24238455222794,1.72290111327225,1,-1,1,1/100.0);
+  /*Betragsoptimum*/
+  PIC_vConstructor(&CurrentController,38.0228,0.08291,100,-100,38.0228,1/100.0);
 
   /*Speed controller*/
   //PIC_vConstructor(&SpeedController,0,0.0911764179885756,20,-20,1,1/100.0);
   /*PIC_vConstructor(&SpeedController,0.00859,0.00117,10,-10,1,1/100.0);*/
   /*TOP PPIC_vConstructor(&SpeedController,0.003101,0.0008224,20,-20,1,1/100.0);*/
 
-  uint16_t adc_value;
-  float voltage_value;
-  float current_value;
-    
-  float rpm=0;
-  float signal=0;
   
   while(1)
-  {/*User button pushed*/
+  {
+    /*FQC_vSetDutyCycle(50);*/
+    /*User button pushed*/
     if(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0))
     {
       /*RPM=-1500.0;*/
-      current_set=-0.88;
-      /*FQC_vSetDutyCycleForward(60);*/
+      current_set=0.58;
+      /*FQC_vSetDutyCycle(-50);*/
       GPIO_SetBits(GPIOD, GPIO_Pin_15);
-      signal=4.52;
+      /*signal=4.52;*/
     }
     else
-    {/*User button released*/
+    {
+      /*User button released*/
       /*RPM=500.0;*/
-      current_set=0.46;
-      /*FQC_vSetDutyCycleForward(20);*/
+      current_set=0.35;
+      /*FQC_vSetDutyCycleBackward(0);*/
       GPIO_ResetBits(GPIOD, GPIO_Pin_15);
-      signal=2.01;
+      /*signal=2.01;*/
     }
-    adc_value=ADC_u16GetADCValue('l');
-    voltage_value=ADC_fGetVoltage(adc_value);
-    current_value=ADC_fGetCurrent(voltage_value);
-    rpm=ENC_fGetRPM();
-    /*USART_vSendFloatAsString(signal);*/
+    /*adc_value=ADC_u16GetADCValue('l');*/
+    /*voltage_value=ADC_fGetVoltage(adc_value);*/
+    /*current_value=ADC_fGetCurrent(voltage_value);*/
+    /*rpm=ENC_fGetRPM();*/
+    /*voltage_value=ADC_fGetVoltage(ADC_u16GetADCValue('l'));*/
+    /*USART_vSendFloatAsString(ADC_fGetCurrentSum());*/
     /*USART_vSendFloatAsString(rpm);*/
-    USART_vSendFloatAsString(rpm);
+    /*USART_vSendFloatAsString(voltage_value);*/
   }
 }
 

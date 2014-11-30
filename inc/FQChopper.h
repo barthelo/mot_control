@@ -18,7 +18,7 @@
 #include "stm32f4xx_conf.h"
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
-#define FQC_SWITCHING_FREQUENCY 20000
+#define FQC_SWITCHING_FREQUENCY 4000
 #define FQC_CK_CNT 3000000
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions --------------------------------------------------------*/

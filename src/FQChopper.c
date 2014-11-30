@@ -89,8 +89,8 @@ void FQC_vSetDutyCycleForward(float FQC_fDutyCycle)
         FQC_fDutyCycle=0;
     
   FQC_u16CCR=(uint16_t)((FQC_fDutyCycle/100.0f)*(FQC_u16ARR+1));
-  TIM_SetCompare2(TIM2, (uint32_t)0);
-  TIM_SetCompare3(TIM2, (uint32_t)FQC_u16CCR);
+  TIM_SetCompare2(TIM2, (uint32_t)FQC_u16CCR);
+  TIM_SetCompare3(TIM2, (uint32_t)0);
 }
 /**
  * @brief  Set PWM duty cycle to rotate in backward direction
@@ -107,8 +107,8 @@ void FQC_vSetDutyCycleBackward(float FQC_fDutyCycle)
         FQC_fDutyCycle=0;
     
   FQC_u16CCR=(uint16_t)((FQC_fDutyCycle/100.0f)*(FQC_u16ARR+1));
-  TIM_SetCompare2(TIM2, (uint32_t)FQC_u16CCR);
-  TIM_SetCompare3(TIM2, (uint32_t)0);
+  TIM_SetCompare2(TIM2, (uint32_t)0);
+  TIM_SetCompare3(TIM2, (uint32_t)FQC_u16CCR);
 }
 
 /**

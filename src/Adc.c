@@ -13,8 +13,6 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-float ADC_fCurrent1=0;
-float ADC_fCurrent2=0;
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
@@ -82,8 +80,8 @@ void ADC_vInit(void)
     ADC_Init(ADC1, &ADC_InitStructure);
 
     /* ADC1 regular channel configuration *************************************/
-    ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 1, ADC_SampleTime_3Cycles);
-    ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 2, ADC_SampleTime_3Cycles);
+    ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 1, ADC_SampleTime_480Cycles);
+    ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 2, ADC_SampleTime_480Cycles);
 
     /* Enable DMA request after last transfer (Single-ADC mode) */
     ADC_DMARequestAfterLastTransferCmd(ADC1, ENABLE);
@@ -133,28 +131,37 @@ float ADC_fGetVoltage(uint16_t ADC_u16ADCValue)
 }
 
 /**
+* @brief Filtering any kind of signal.
+* @note  Only one Signal can be filtered because just two variables to
+*        store old values are available.
+* @param ADC_fSignal Signal value
+* @retval ADC_fFilteredSignal Filtered signal value
+**/
+float ADC_fFilterSignal(float ADC_fSignal)
+{
+  static float ADC_fSignal1=0;
+  static float ADC_fSignal2=0;
+  float ADC_fFilteredSignal;
+
+  /*Filtering signal*/
+  ADC_fFilteredSignal=ADC_FILTER_COEFF_1*ADC_fSignal1+ADC_FILTER_COEFF_2*ADC_fSignal2;
+  ADC_fSignal1=ADC_fSignal;
+  ADC_fSignal2=ADC_fFilteredSignal;
+
+  return ADC_fFilteredSignal;
+}
+/**
 * @brief Calculate current value out of given voltage value
 * @param ADC_fVoltage Voltage value
 * @retval ADC_fCurrent Current value
 **/
 
-float ADC_fGetCurrent(float ADC_fVoltage)
+float ADC_fGetCurrent(void)
 {
-  float ADC_fCurrent=0;
-  float ADC_fCurrentFilter=0;
-  float sign;
-
-  /*Get encoder's direction*/
-  ENC_ui8GetDir()?(sign=(-1)):(sign=1);
+  float ADC_fCurrent;
   
   /*Calculate voltage to currentt*/
-  ADC_fCurrent=sign*ADC_fVoltage*ADC_LOAD_CURRENT_FACTOR;
-  
-  /*Filtering current*/
-  ADC_fCurrentFilter=ADC_FILTER_COEFF_1*ADC_fCurrent1+ADC_FILTER_COEFF_2*ADC_fCurrent2;
-  ADC_fCurrent1=ADC_fCurrent;
-  ADC_fCurrent2=ADC_fCurrentFilter;
+  ADC_fCurrent=ADC_LOAD_CURRENT_FACTOR*((ADC_fGetVoltage(ADC_u16GetADCValue('l'))-ADC_OFFSET_L)-(ADC_fGetVoltage(ADC_u16GetADCValue('r'))-ADC_OFFSET_R));
 
-  return ADC_fCurrentFilter*0.58+0.163;
+  return ADC_fFilterSignal(ADC_fCurrent);
 }
-

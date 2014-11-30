@@ -19,17 +19,20 @@
 /* Exported types ------------------------------------------------------------*/
 volatile uint16_t ADC_u16ConvertedValue[2];
 /* Exported constants --------------------------------------------------------*/
-#define ADC_FILTER_COEFF_1 0.0198
-#define ADC_FILTER_COEFF_2 0.9608
+#define ADC_FILTER_COEFF_1 0.1047
+#define ADC_FILTER_COEFF_2 0.9048
 #define ADC1_DR_ADDRESS 0x4001204C //ADC Regular Data Register of ADC1 (RM0090 p. 51, 247, 242)
 #define ADC_VOLTAGE_REFERENCE 2.95
 #define ADC_MAX_RESOLUTION 4095.0
-#define ADC_LOAD_CURRENT_FACTOR 5.67
+#define ADC_LOAD_CURRENT_FACTOR 8.5
+#define ADC_OFFSET_L 0.157
+#define ADC_OFFSET_R 0.123
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions --------------------------------------------------------*/
 void ADC_vInit(void);
 uint16_t ADC_u16GetADCValue(char ADC_cChopperSide);
 float ADC_fGetVoltage(uint16_t ADC_u16ADCValue);
-float ADC_fGetCurrent(float ADC_fVoltage);
+float ADC_fGetCurrent(void);
+float ADC_fFilterSignal(float ADC_fSignal);
 
 #endif /* __ADC_H */

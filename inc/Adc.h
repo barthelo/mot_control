@@ -17,16 +17,26 @@
 #include "stm32f4xx_adc.h"
 #include "SpeedEncoder.h"
 /* Exported types ------------------------------------------------------------*/
-volatile uint16_t ADC_u16ConvertedValue[2];
 /* Exported constants --------------------------------------------------------*/
-#define ADC_FILTER_COEFF_1 0.1047
+#define ADC_SAMPLES 105
+#define ADC_FILTER_COEFF_1 0.09516
 #define ADC_FILTER_COEFF_2 0.9048
-#define ADC1_DR_ADDRESS 0x4001204C //ADC Regular Data Register of ADC1 (RM0090 p. 51, 247, 242)
-#define ADC_VOLTAGE_REFERENCE 2.95
+#define ADC_VOLTAGE_REFERENCE 2.98
 #define ADC_MAX_RESOLUTION 4095.0
-#define ADC_LOAD_CURRENT_FACTOR 8.5
+#define ADC_LOAD_CURRENT_FACTOR 10.25
 #define ADC_OFFSET_L 0.157
 #define ADC_OFFSET_R 0.123
+
+#define  ADC1_DR_ADDRESS ((uint32_t)0x4001204C) //ADC Regular Data Register of ADC1 (RM0090 p. 51, 247, 242)
+#define  ADC2_DR_ADDRESS ((uint32_t)0x4001214C) //ADC Regular Data Register of ADC2 (RM0090 p. 51, 247, 242)
+#define  ADC_CDR_ADDRESS ((uint32_t)0x40012308)
+
+volatile uint16_t ADC_u16ConvertedValueLeft;
+volatile uint16_t ADC_u16ConvertedValueRight;
+volatile float ADC_fSumLeft;
+volatile float ADC_fSumRight;
+volatile float ADC_fMeanLeft;
+volatile float ADC_fMeanRight;
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions --------------------------------------------------------*/
 void ADC_vInit(void);

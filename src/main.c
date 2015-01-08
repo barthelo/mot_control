@@ -30,18 +30,18 @@ void TIM3_IRQHandler(void)
     current_value=ADC_fGetCurrent();
 
     /*Calculating current to set*/
-    current_set=PIC_fCalcCommandIdealForm(&SpeedController,velo_set,velo_value);
+    /*current_set=PIC_fCalcCommandIdealForm(&SpeedController,velo_set,velo_value);*/
     /*Calculating duty cycle to set*/
     dutycycle=PIC_fCalcCommandIdealForm(&CurrentController,current_set,current_value);
+
     /*Convert values to valid duty cylce*/
     FQC_vSetDutyCycle(dutycycle);
     
-    USART_vSendFloatAsString(velo_value);
+    USART_vSendFloatAsString(current_value);
 
     TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
   }
 }
-
 
 int main(void)
 {
@@ -54,28 +54,27 @@ int main(void)
   TIMM_vInit();
 
   /*Current controller*/
-  PIC_vConstructor(&CurrentController,21.17,28.34,100,-100,21.17,1/100.0);
+  PIC_vConstructor(&CurrentController,15.17,4.34,100,-100,15.17,1/100.0);
   /*Speed controller*/
-  PIC_vConstructor(&SpeedController,17.3,0.006,10,-10,2.3,1/100.0);
+  PIC_vConstructor(&SpeedController,0.005,0.00010,10,-10,1,1/100.0);
 
   while(1)
   {
-    /*FQC_vSetDutyCycle(50);*/
     /*User button pushed*/
     if(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0))
     {
-      velo_set=-150.0;
-      /*current_set=1.95;*/
-      //FQC_vSetDutyCycle(-80);
+      /*velo_set=-150.0;*/
+      current_set=1.98;
+      /*FQC_vSetDutyCycle(80);*/
       /*signal=4.52;*/
       GPIO_SetBits(GPIOD, GPIO_Pin_15);
     }
     else
     {
       /*User button released*/
-      velo_set=15.0;
-      /*current_set=0.28;*/
-      //FQC_vSetDutyCycle(80);
+      /*velo_set=15.0;*/
+      current_set=-0.58;
+      /*FQC_vSetDutyCycle(10);*/
       /*signal=2.01;*/
       GPIO_ResetBits(GPIOD, GPIO_Pin_15);
     }
